@@ -1,18 +1,33 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
-import TechStack from '../components/TechStack';
+import { Container, Row, Col } from 'react-bootstrap';
+import TabbedTechStack from '../components/TabbedTechStack';
 
+const Home = ({ darkMode }) => {
+  const textClass = darkMode ? 'text-light' : 'text-dark';
 
-const Home = ({ darkMode }) => (
+  return (
     <>
-        <Container className={`mt-5 ${darkMode ? 'text-light' : 'text-dark'}`}>
-            <h1>Welcome to My Portfolio</h1>
-            <p>I'm Joel McGillivray — a software developer passionate about building great digital experiences.</p>
-        </Container>
+      <Container className={`mt-5 ${textClass}`}>
+        {/* Top row: heading + button */}
+        <Row>
+            <Col md={{ span: 10, offset: 1 }}>
+                <h1 className={`mb-0 ${textClass}`}>👋 Hey, I'm Joel</h1>
+            </Col>
+        </Row>
 
-        <TechStack darkMode = {darkMode} /> 
+        {/* Bottom row: subheading text full width */}
+        <Row>
+            <Col md={{ span: 10, offset: 1 }}>
+            <p className={`lead ${textClass}`}>
+              A developer who started in QA, obsessed with clean code, testing, and bringing great ideas to life.
+            </p>
+          </Col>
+        </Row>
+      </Container>
+
+      <TabbedTechStack darkMode={darkMode} />
     </>
-  
-);
+  );
+};
 
 export default Home;
