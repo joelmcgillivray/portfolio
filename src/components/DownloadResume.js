@@ -46,7 +46,7 @@ const DownloadResume = ({ link = '', darkMode }) => {
             style={{
               width: '20px',
               height: '20px',
-              filter: 'none', // always show icon as-is (black)
+              filter: 'none', // always show icon as-is (black) 
             }}
           />
         </div>
