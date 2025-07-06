@@ -1,5 +1,16 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/example/public_html/
-    - /bin/cp -R images $DEPLOYPATH
+    - echo "🔧 Installing dependencies..."
+    - /opt/cpanel/ea-nodejs18/bin/npm install
+
+    - echo "🏗️ Building React app..."
+    - /opt/cpanel/ea-nodejs18/bin/npm run build
+
+    - export DEPLOYPATH=/home/pahgl653/public_html
+
+    - echo "🧹 Cleaning old files at $DEPLOYPATH"
+    - /bin/rm -rf $DEPLOYPATH/*
+
+    - echo "📦 Copying build files to $DEPLOYPATH"
+    - /bin/cp -R build/* $DEPLOYPATH
