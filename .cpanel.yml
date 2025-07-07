@@ -1,6 +1,12 @@
 ---
 deployment:
   tasks:
+    - echo "🔧 Installing dependencies..."
+    - /opt/cpanel/ea-nodejs18/bin/npm install > npm-install.log 2>&1
+
+    - echo "🏗️ Building React app..."
+    - /opt/cpanel/ea-nodejs18/bin/npm run build > npm-build.log 2>&1
+
     - export DEPLOYPATH=/home/pahgl653/public_html
 
     - echo "🧹 Cleaning old files at $DEPLOYPATH"
