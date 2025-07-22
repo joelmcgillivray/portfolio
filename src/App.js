@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MyNavbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -8,16 +8,33 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import SettingsModal from './components/SettingsModal';
 
-function App() {
-  const [darkMode, setDarkMode] = useState(true); // dark by default
-  const [showSettings, setShowSettings] = useState(false);
+const storageKey = 'theme-preference';
 
-  const toggleDarkMode = () => setDarkMode(!darkMode);
+function App() {
+  const getInitialTheme = () => {
+    const stored = localStorage.getItem(storageKey);
+    return stored ? stored : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  };
+
+  const [theme, setTheme] = useState(getInitialTheme());
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(storageKey, theme);
+  }, [theme]);
+
+  const darkMode = theme === 'dark';
+  const [showSettings, setShowSettings] = useState(false);
 
   return (
     <Router>
       <div className={`d-flex flex-column min-vh-100 ${darkMode ? 'bg-dark text-light' : 'bg-light text-dark'}`}>
-      <MyNavbar darkMode={darkMode} onSettingsClick={() => setShowSettings(true)} />
+        <MyNavbar
+          darkMode={darkMode}
+          theme={theme}
+          setTheme={setTheme}
+          onSettingsClick={() => setShowSettings(true)}
+        />
         <main className="flex-grow-1">
           <Routes>
             <Route path="/" element={<Home darkMode={darkMode} />} />
@@ -31,7 +48,7 @@ function App() {
           show={showSettings}
           handleClose={() => setShowSettings(false)}
           darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
+          setTheme={setTheme}
         />
       </div>
     </Router>
