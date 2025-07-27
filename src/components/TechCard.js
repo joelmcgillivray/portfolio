@@ -1,29 +1,25 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Collapse } from 'react-bootstrap';
 
-const TechCard = ({ name, years, icon, darkMode }) => {
+const TechCard = ({ name, years, icon, darkMode, isExpanded, onToggle }) => {
   return (
     <Card
       className={`text-center border-0 shadow-sm w-100 ${
         darkMode ? 'bg-secondary text-light' : 'bg-light text-dark'
       }`}
-      style={{ borderRadius: '1rem' }}
+      style={{ borderRadius: '1rem', cursor: 'pointer', transition: 'all 0.3s ease' }}
+      onClick={onToggle}
     >
       <Card.Body>
         <div
-          className="bg-light rounded d-flex align-items-center justify-content-center mb-3"
+          className="rounded d-flex align-items-center justify-content-center mb-3"
           style={{
+            backgroundColor: darkMode ? '#f8f9fa' : '#ffffff',
             width: '50px',
             height: '50px',
             margin: '0 auto',
             transition: 'box-shadow 0.3s ease-in-out',
-            cursor: 'default',
           }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.boxShadow =
-              '0 0 10px rgba(0, 123, 255, 0.3)')
-          }
-          onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'none')}
         >
           <img
             src={icon}
@@ -37,6 +33,15 @@ const TechCard = ({ name, years, icon, darkMode }) => {
         <p className="mb-0">
           {years}~ year{years > 1 ? 's' : ''} experience
         </p>
+
+        <Collapse in={isExpanded}>
+          <div className="mt-3">
+            <p className="small">
+              {/* Add custom detail text for each tech stack if needed */}
+              I’ve used {name} for various academic, personal, and production-level projects, building scalable solutions.
+            </p>
+          </div>
+        </Collapse>
       </Card.Body>
     </Card>
   );

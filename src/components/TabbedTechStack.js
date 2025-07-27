@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import techData from '../data/techData';
 
 const TabbedTechStack = ({ darkMode }) => {
   const [key, setKey] = useState(techData[0].label);
+  const [activeCard, setActiveCard] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const cardBg = darkMode ? 'bg-secondary text-light' : 'bg-light text-dark';
   const iconBoxBg = darkMode ? '#f8f9fa' : '#ffffff';
@@ -47,61 +58,92 @@ const TabbedTechStack = ({ darkMode }) => {
           ))}
         </div>
 
-        <Row className="mt-2">
+        <Row className="mt-2 gx-4 gy-4">
           {techData
             .find((cat) => cat.label === key)
-            ?.items.map((tech, techIdx) => (
-              <Col
-                key={techIdx}
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                className="mb-4 d-flex align-items-stretch"
-              >
-                <Card
-                  className={`text-center border-0 shadow-sm w-100 ${cardBg}`}
-                  style={{ borderRadius: '1rem' }}
+            ?.items.map((tech, techIdx) => {
+              const isActive = activeCard === techIdx;
+
+              const handleMouseEnter = () => {
+                if (!isMobile) setActiveCard(techIdx);
+              };
+
+              const handleMouseLeave = () => {
+                if (!isMobile) setActiveCard(null);
+              };
+
+              const handleClick = () => {
+                if (isMobile)
+                  setActiveCard((prev) => (prev === techIdx ? null : techIdx));
+              };
+
+              return (
+                <Col
+                  key={techIdx}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
                 >
-                  <Card.Body>
-                    <div
-                      className="rounded d-flex align-items-center justify-content-center mb-3"
-                      style={{
-                        backgroundColor: iconBoxBg,
-                        width: '50px',
-                        height: '50px',
-                        margin: '0 auto',
-                        transition: 'box-shadow 0.3s ease-in-out',
-                        cursor: 'default',
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.boxShadow =
-                          '0 0 10px rgba(0, 123, 255, 0.3)')
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.boxShadow = 'none')
-                      }
-                    >
-                      <img
-                        src={tech.icon}
-                        alt={tech.name}
-                        title={tech.name}
-                        className="img-fluid"
+                  <Card
+                    className={`text-center border-0 shadow-sm w-100 ${cardBg}`}
+                    style={{
+                      borderRadius: '1rem',
+                      transition: 'all 0.3s ease',
+                      transform: isActive ? 'scale(1.04)' : 'scale(1)',
+                      zIndex: isActive ? 1 : 0,
+                    }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onClick={handleClick}
+                  >
+                    <Card.Body>
+                      <div
+                        className="rounded d-flex align-items-center justify-content-center mb-3"
                         style={{
-                          width: '30px',
-                          height: '30px',
-                          objectFit: 'contain',
+                          backgroundColor: iconBoxBg,
+                          width: '50px',
+                          height: '50px',
+                          margin: '0 auto',
+                          transition: 'box-shadow 0.3s ease-in-out',
+                          cursor: 'default',
                         }}
-                      />
-                    </div>
-                    <h5 className="mb-2">{tech.name}</h5>
-                    <p className="mb-0">
-                      {tech.years}~ year{tech.years > 1 ? 's' : ''} experience
-                    </p>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
+                      >
+                        <img
+                          src={tech.icon}
+                          alt={tech.name}
+                          title={tech.name}
+                          className="img-fluid"
+                          style={{
+                            width: '30px',
+                            height: '30px',
+                            objectFit: 'contain',
+                          }}
+                        />
+                      </div>
+                      <h5 className="mb-2">{tech.name}</h5>
+                      <p className="mb-1">
+                        {tech.years}~ year{tech.years > 1 ? 's' : ''} experience
+                      </p>
+
+                      {isActive && (
+                        <p
+                          style={{
+                            fontSize: '0.85rem',
+                            overflow: 'hidden',
+                            transition: 'max-height 0.3s ease',
+                          }}
+                          className="mt-2"
+                        >
+                          {tech.description ||
+                            `Detailed experience with ${tech.name}. Includes projects, integrations, and best practices learned over time.`}
+                        </p>
+                      )}
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
         </Row>
       </section>
     </Container>
